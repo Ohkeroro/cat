@@ -31,15 +31,22 @@ class _NewCatScreenState extends State<NewCatScreen> {
   Future<void> _saveCat() async {
     if (_nameController.text.isNotEmpty && _image != null) {
       String imagePath = await FileService.saveImage(_image!);
-      Cat newCat = Cat(name: _nameController.text, details: _detailsController.text, imagePath: imagePath);
+      Cat newCat = Cat(
+        name: _nameController.text,
+        details: _detailsController.text,
+        imagePath: imagePath,
+      );
 
       List<Cat> cats = await FileService.loadCats();
       cats.add(newCat);
       await FileService.saveCats(cats);
 
-      Navigator.pop(context, true); 
+      // ✅ ส่งค่า true กลับไปให้ CatListScreen โหลดข้อมูลใหม่
+      Navigator.pop(context, true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบ')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบ')),
+      );
     }
   }
 
@@ -47,7 +54,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('เพิ่มแมวใหม่')),
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

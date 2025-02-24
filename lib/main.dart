@@ -1,6 +1,5 @@
-import 'package:cat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Cat App',
       theme: ThemeData(primarySwatch: Colors.orange),
-      home: const HomeScreen(), 
+      home: const LoginScreen(), // ✅ เริ่มที่ LoginScreen
     );
   }
 }

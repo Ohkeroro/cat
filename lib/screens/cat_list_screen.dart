@@ -35,6 +35,57 @@ class _CatListScreenState extends State<CatListScreen> {
     });
   }
 
+  // เพิ่มฟังก์ชันลบแมว
+  Future<void> _deleteCat(int index) async {
+    // สร้าง dialog ยืนยันการลบ
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ยืนยันการลบ'),
+        content: Text('คุณต้องการลบ "${_cats[index].name}" หรือไม่?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('ยกเลิก'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('ลบ', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    ) ?? false;
+
+    if (confirmDelete) {
+      // ถ้าชื่อไฟล์ไม่ใช่ assets ให้ลบไฟล์รูปภาพด้วย
+      if (!_cats[index].imagePath.startsWith('assets/')) {
+        try {
+          File imageFile = File(_cats[index].imagePath);
+          if (await imageFile.exists()) {
+            await imageFile.delete();
+          }
+        } catch (e) {
+          // กรณีลบไฟล์ไม่สำเร็จ ให้ทำการบันทึกลงในบันทึกข้อผิดพลาด
+          print('Error deleting image file: $e');
+        }
+      }
+
+      // ลบแมวออกจากรายการ
+      _cats.removeAt(index);
+      
+      // บันทึกข้อมูลแมวที่เหลือ
+      await FileService.saveCats(_cats);
+      
+      // อัปเดตหน้าจอ
+      setState(() {});
+      
+      // แสดงข้อความแจ้งเตือนว่าลบสำเร็จแล้ว
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ลบข้อมูลแมวเรียบร้อยแล้ว')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,14 +114,52 @@ class _CatListScreenState extends State<CatListScreen> {
                   return Card(
                     elevation: 6,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(12),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: _loadImage(cat.imagePath),
+                    child: Dismissible(
+                      // เพิ่ม Dismissible เพื่อให้สามารถปัดซ้ายหรือขวาเพื่อลบได้
+                      key: Key(cat.name + DateTime.now().toString()),
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
-                      title: Text(cat.name, style: GoogleFonts.notoSansThai(fontSize: 18, fontWeight: FontWeight.bold)),
-                      subtitle: Text(cat.details, style: GoogleFonts.notoSansThai(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      direction: DismissDirection.endToStart, // ปัดจากขวาไปซ้ายเท่านั้น
+                      confirmDismiss: (direction) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('ยืนยันการลบ'),
+                            content: Text('คุณต้องการลบ "${cat.name}" หรือไม่?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('ยกเลิก'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('ลบ', style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      onDismissed: (direction) {
+                        _deleteCat(index);
+                      },
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _loadImage(cat.imagePath),
+                        ),
+                        title: Text(cat.name, style: GoogleFonts.notoSansThai(fontSize: 18, fontWeight: FontWeight.bold)),
+                        subtitle: Text(cat.details, style: GoogleFonts.notoSansThai(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
+                        trailing: IconButton(
+                          // เพิ่มปุ่มลบด้านขวา
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteCat(index),
+                        ),
+                      ),
                     ),
                   );
                 },

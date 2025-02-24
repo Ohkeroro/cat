@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'saved_cats_screen.dart'; // ✅ นำเข้าไฟล์ SavedCatsScreen
 import '../services/file_service.dart';
 import '../models/cat.dart';
+import '../models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final User user; // ✅ รับค่า User ที่ล็อกอินอยู่
+  const ProfileScreen({super.key, required this.user});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -27,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: AppBar(title: const Text('โปรไฟล์ของฉัน')),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -41,31 +44,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage('assets/images/profile.jpg'), 
+              backgroundImage: AssetImage('assets/images/profile.jpg'),
             ),
             const SizedBox(height: 10),
+
+            // ✅ แสดงชื่อผู้ใช้แทน ID คงที่
             Text(
-              'คุณแมว ID: 00001',
+              'คุณ ${widget.user.name}',
               style: GoogleFonts.notoSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
             ),
+            Text(
+              'อีเมล: ${widget.user.email}',
+              style: GoogleFonts.notoSansThai(fontSize: 18, color: Colors.white70),
+            ),
+
             const SizedBox(height: 10),
             _buildStatsCard(),
-          ],
-        ),
-      ),
-    );
-  }
+            const SizedBox(height: 20),
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: const Text('โปรไฟล์ของฉัน'),
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [Colors.orange, Colors.deepOrange]),
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+            // ✅ ปุ่มเปิดหน้ารายการแมวที่บันทึกไว้
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SavedCatsScreen()),
+                );
+              },
+              child: const Text('ดูแมวที่บันทึกไว้'),
+            ),
+          ],
         ),
       ),
     );
@@ -85,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildStatItem('แมวทั้งหมด', '$_catCount ตัว'), 
+                _buildStatItem('แมวทั้งหมด', '$_catCount ตัว'),
               ],
             ),
           ],
