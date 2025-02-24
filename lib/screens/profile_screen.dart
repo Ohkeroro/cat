@@ -41,11 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage('assets/profile.jpg'), // 🔹 เปลี่ยนเป็นรูปของคุณ
+              backgroundImage: AssetImage('assets/images/profile.jpg'), 
             ),
             const SizedBox(height: 10),
             Text(
-              'คุณแมว ID: 0000001',
+              'คุณแมว ID: 00001',
               style: GoogleFonts.notoSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const SizedBox(height: 10),
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text('🐾 โปรไฟล์ของฉัน'),
+      title: const Text('โปรไฟล์ของฉัน'),
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -80,13 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Text('🐱 สถิติของฉัน', style: GoogleFonts.notoSansThai(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('สถิติของฉัน', style: GoogleFonts.notoSansThai(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildStatItem('🐾 แมวทั้งหมด', '$_catCount ตัว'),
-            
+                _buildStatItem('แมวทั้งหมด', '$_catCount ตัว'), 
               ],
             ),
           ],

@@ -13,8 +13,9 @@ class FileService {
     try {
       final file = await _getFile();
       if (!await file.exists()) return [];
+
       String content = await file.readAsString();
-      List<dynamic> jsonData = jsonDecode(utf8.decode(content.codeUnits)); // ✅ รองรับภาษาไทย
+      List<dynamic> jsonData = jsonDecode(content);
       return jsonData.map((e) => Cat.fromJson(e)).toList();
     } catch (e) {
       return [];
@@ -23,14 +24,13 @@ class FileService {
 
   static Future<void> saveCats(List<Cat> cats) async {
     final file = await _getFile();
-    await file.writeAsString(utf8.encode(jsonEncode(cats.map((e) => e.toJson()).toList())).toString()); // ✅ บันทึกภาษาไทย
+    await file.writeAsString(jsonEncode(cats.map((e) => e.toJson()).toList()));
   }
 
-  // 📸 บันทึกรูปที่เลือกจากไฟล์ลง storage
   static Future<String> saveImage(File image) async {
     final directory = await getApplicationDocumentsDirectory();
-    final newPath = '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.png';
-    final newImage = await image.copy(newPath);
+    final String newPath = '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final File newImage = await image.copy(newPath);
     return newImage.path;
   }
 }
