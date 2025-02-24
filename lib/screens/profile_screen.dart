@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'คุณแมว',
+              'คุณแมว ID: 0000001',
               style: GoogleFonts.notoSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const SizedBox(height: 10),
@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildStatItem('🐾 แมวทั้งหมด', '$_catCount ตัว'),
-                _buildStatItem('💖 คนรักแมว', '1,000+ คน'),
+            
               ],
             ),
           ],

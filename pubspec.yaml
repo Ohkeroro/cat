@@ -9,10 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^1.0.4  # สำหรับเลือกรูปภาพจากไฟล์
-  path_provider: ^2.1.2 # ใช้เก็บไฟล์ลง storage
-  google_fonts: ^6.2.1  # ใช้ฟอนต์ภาษาไทย (Noto Sans Thai)
-  permission_handler: ^11.0.1  # ใช้ขอสิทธิ์เข้าถึงไฟล์ (สำหรับ Android)
+  image_picker: ^1.0.4  
+  path_provider: ^2.1.2 
+  google_fonts: ^6.2.1  
+  permission_handler: ^11.0.1  
 
 
 
@@ -23,3 +23,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
