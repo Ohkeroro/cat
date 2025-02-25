@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _catCount = cats.length);
   }
   
-  // เพิ่มฟังก์ชัน logout
+  // เพิ่ม logout
   void _logout() {
     showDialog(
       context: context,

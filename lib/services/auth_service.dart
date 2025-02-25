@@ -9,21 +9,21 @@ class AuthService {
     return File('${dir.path}/users.json');
   }
 
-  // ✅ สมัครสมาชิก
+  // สมัครสมาชิก
   static Future<bool> register(User user) async {
     List<User> users = await loadUsers();
 
     // เช็คว่ามีอีเมลซ้ำหรือไม่
     if (users.any((u) => u.email == user.email)) {
-      return false; // ❌ อีเมลซ้ำ
+      return false; // อีเมลซ้ำ
     }
 
     users.add(user);
     await _saveUsers(users);
-    return true; // ✅ สมัครสมาชิกสำเร็จ
+    return true; // สมัครสมาชิกสำเร็จ
   }
 
-  // ✅ ล็อกอิน
+  // ล็อกอิน
   static Future<User?> login(String email, String password) async {
     List<User> users = await loadUsers();
     
@@ -32,11 +32,11 @@ class AuthService {
         (u) => u.email == email && u.password == password,
       );
     } catch (e) {
-      return null; // ❌ ไม่เจอผู้ใช้
+      return null; // ไม่เจอผู้ใช้
     }
   }
 
-  // ✅ โหลดผู้ใช้ทั้งหมด
+  // โหลดผู้ใช้ทั้งหมด
   static Future<List<User>> loadUsers() async {
     try {
       final file = await _getFile();
@@ -49,11 +49,11 @@ class AuthService {
 
       return jsonData.map((e) => User.fromJson(e)).toList();
     } catch (e) {
-      return []; // ❌ ถ้ามีข้อผิดพลาด ให้คืนค่าเป็น []
+      return []; // ถ้ามีข้อผิดพลาด ให้คืนค่าเป็น []
     }
   }
 
-  // ✅ บันทึกข้อมูลผู้ใช้
+  // บันทึกข้อมูลผู้ใช้
   static Future<void> _saveUsers(List<User> users) async {
     final file = await _getFile();
     await file.writeAsString(jsonEncode(users.map((e) => e.toJson()).toList()));

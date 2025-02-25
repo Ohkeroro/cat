@@ -24,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       setState(() {
-        _errorMessage = "❌ กรุณากรอกข้อมูลให้ครบ!";
+        _errorMessage = "กรุณากรอกข้อมูลให้ครบ!";
         _successMessage = '';
       });
       return;
@@ -34,7 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (success) {
       setState(() {
-        _successMessage = "✅ สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ";
+        _successMessage = "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ";
         _errorMessage = '';
       });
 

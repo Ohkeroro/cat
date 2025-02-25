@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/file_service.dart';
 import '../models/cat.dart';
 import 'new_cat_screen.dart';
-import '../models/user.dart'; // เพิ่ม import user
+import '../models/user.dart'; 
 
 class CatListScreen extends StatefulWidget {
   final User user; // เพิ่มพารามิเตอร์เพื่อรับข้อมูล user
@@ -171,7 +171,7 @@ class _CatListScreenState extends State<CatListScreen> {
           bool? result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NewCatScreen(userEmail: widget.user.email), // ส่ง email ไปด้วย
+              builder: (context) => NewCatScreen(userEmail: widget.user.email), // ส่ง email ไป
             ),
           );
           if (result == true) {

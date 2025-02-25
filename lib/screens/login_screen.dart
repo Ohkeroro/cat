@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       setState(() {
-        _errorMessage = "❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง!";
+        _errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง!";
       });
     }
   }
