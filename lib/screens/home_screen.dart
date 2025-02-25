@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'cat_list_screen.dart';
 import 'profile_screen.dart';
+import 'search_screen.dart';
 import '../models/user.dart';
 
 class HomeScreen extends StatefulWidget {
-  final User user; // ✅ รับค่า User ที่ล็อกอินอยู่
+  final User user;
 
   const HomeScreen({super.key, required this.user});
 
@@ -18,8 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      const CatListScreen(),
-      ProfileScreen(user: widget.user), // ✅ ส่งค่า user ไปที่ ProfileScreen
+      CatListScreen(user: widget.user),
+      SearchScreen(user: widget.user),
+      ProfileScreen(user: widget.user),
     ];
 
     return Scaffold(
@@ -27,10 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'แมวทั้งหมด'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'ค้นหา'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'โปรไฟล์'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() => _selectedIndex = index);
         },

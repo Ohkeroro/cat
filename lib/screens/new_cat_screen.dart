@@ -5,7 +5,9 @@ import '../services/file_service.dart';
 import '../models/cat.dart';
 
 class NewCatScreen extends StatefulWidget {
-  const NewCatScreen({super.key});
+  final String userEmail; // เพิ่มพารามิเตอร์รับอีเมลผู้ใช้
+  
+  const NewCatScreen({super.key, required this.userEmail});
 
   @override
   _NewCatScreenState createState() => _NewCatScreenState();
@@ -17,7 +19,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
-  // ✅ ฟังก์ชันเลือกรูปจาก Gallery หรือ Camera
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
@@ -27,7 +28,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
     }
   }
 
-  // ✅ ฟังก์ชันบันทึกแมว
+  // ปรับปรุงการบันทึกแมวให้เก็บอีเมลผู้ใช้ด้วย
   Future<void> _saveCat() async {
     if (_nameController.text.isNotEmpty && _image != null) {
       String imagePath = await FileService.saveImage(_image!);
@@ -35,13 +36,16 @@ class _NewCatScreenState extends State<NewCatScreen> {
         name: _nameController.text,
         details: _detailsController.text,
         imagePath: imagePath,
+        userEmail: widget.userEmail, // เพิ่มอีเมลผู้ใช้
       );
 
-      List<Cat> cats = await FileService.loadCats();
+      // โหลดเฉพาะข้อมูลแมวของผู้ใช้นี้
+      List<Cat> cats = await FileService.loadCatsByUser(widget.userEmail);
       cats.add(newCat);
-      await FileService.saveCats(cats);
+      
+      // บันทึกข้อมูลแมวของผู้ใช้นี้
+      await FileService.saveCatsByUser(cats, widget.userEmail);
 
-      // ✅ ส่งค่า true กลับไปให้ CatListScreen โหลดข้อมูลใหม่
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

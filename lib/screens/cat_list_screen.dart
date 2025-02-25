@@ -4,9 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/file_service.dart';
 import '../models/cat.dart';
 import 'new_cat_screen.dart';
+import '../models/user.dart'; // เพิ่ม import user
 
 class CatListScreen extends StatefulWidget {
-  const CatListScreen({super.key});
+  final User user; // เพิ่มพารามิเตอร์เพื่อรับข้อมูล user
+  
+  const CatListScreen({super.key, required this.user});
 
   @override
   _CatListScreenState createState() => _CatListScreenState();
@@ -22,22 +25,23 @@ class _CatListScreenState extends State<CatListScreen> {
   }
 
   Future<void> _loadCats() async {
-    List<Cat> cats = await FileService.loadCats();
+    // โหลดเฉพาะแมวของผู้ใช้ปัจจุบัน
+    List<Cat> cats = await FileService.loadCatsByUser(widget.user.email);
     setState(() {
       _cats = cats;
     });
   }
 
   Future<void> _refreshCats() async {
-    List<Cat> cats = await FileService.loadCats();
+    // โหลดเฉพาะแมวของผู้ใช้ปัจจุบัน
+    List<Cat> cats = await FileService.loadCatsByUser(widget.user.email);
     setState(() {
       _cats = cats;
     });
   }
 
-  // เพิ่มฟังก์ชันลบแมว
+  // ปรับปรุงฟังก์ชันลบแมวให้ทำงานกับการแยกข้อมูลผู้ใช้
   Future<void> _deleteCat(int index) async {
-    // สร้าง dialog ยืนยันการลบ
     bool confirmDelete = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -65,7 +69,6 @@ class _CatListScreenState extends State<CatListScreen> {
             await imageFile.delete();
           }
         } catch (e) {
-          // กรณีลบไฟล์ไม่สำเร็จ ให้ทำการบันทึกลงในบันทึกข้อผิดพลาด
           print('Error deleting image file: $e');
         }
       }
@@ -73,8 +76,8 @@ class _CatListScreenState extends State<CatListScreen> {
       // ลบแมวออกจากรายการ
       _cats.removeAt(index);
       
-      // บันทึกข้อมูลแมวที่เหลือ
-      await FileService.saveCats(_cats);
+      // บันทึกข้อมูลแมวที่เหลือของผู้ใช้นี้
+      await FileService.saveCatsByUser(_cats, widget.user.email);
       
       // อัปเดตหน้าจอ
       setState(() {});
@@ -115,7 +118,6 @@ class _CatListScreenState extends State<CatListScreen> {
                     elevation: 6,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Dismissible(
-                      // เพิ่ม Dismissible เพื่อให้สามารถปัดซ้ายหรือขวาเพื่อลบได้
                       key: Key(cat.name + DateTime.now().toString()),
                       background: Container(
                         color: Colors.red,
@@ -123,7 +125,7 @@ class _CatListScreenState extends State<CatListScreen> {
                         padding: const EdgeInsets.only(right: 20),
                         child: const Icon(Icons.delete, color: Colors.white),
                       ),
-                      direction: DismissDirection.endToStart, // ปัดจากขวาไปซ้ายเท่านั้น
+                      direction: DismissDirection.endToStart,
                       confirmDismiss: (direction) async {
                         return await showDialog(
                           context: context,
@@ -155,7 +157,6 @@ class _CatListScreenState extends State<CatListScreen> {
                         title: Text(cat.name, style: GoogleFonts.notoSansThai(fontSize: 18, fontWeight: FontWeight.bold)),
                         subtitle: Text(cat.details, style: GoogleFonts.notoSansThai(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
                         trailing: IconButton(
-                          // เพิ่มปุ่มลบด้านขวา
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => _deleteCat(index),
                         ),
@@ -169,7 +170,9 @@ class _CatListScreenState extends State<CatListScreen> {
         onPressed: () async {
           bool? result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const NewCatScreen()),
+            MaterialPageRoute(
+              builder: (context) => NewCatScreen(userEmail: widget.user.email), // ส่ง email ไปด้วย
+            ),
           );
           if (result == true) {
             _refreshCats(); 

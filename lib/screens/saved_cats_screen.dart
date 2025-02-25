@@ -5,7 +5,9 @@ import '../services/file_service.dart';
 import '../models/cat.dart';
 
 class SavedCatsScreen extends StatefulWidget {
-  const SavedCatsScreen({super.key});
+  final String userEmail; // เพิ่มพารามิเตอร์รับอีเมลผู้ใช้
+  
+  const SavedCatsScreen({super.key, required this.userEmail});
 
   @override
   _SavedCatsScreenState createState() => _SavedCatsScreenState();
@@ -21,7 +23,8 @@ class _SavedCatsScreenState extends State<SavedCatsScreen> {
   }
 
   Future<void> _loadSavedCats() async {
-    List<Cat> cats = await FileService.loadCats();
+    // โหลดเฉพาะแมวของผู้ใช้ปัจจุบัน
+    List<Cat> cats = await FileService.loadCatsByUser(widget.userEmail);
     setState(() {
       _cats = cats;
     });
@@ -71,7 +74,6 @@ class _SavedCatsScreenState extends State<SavedCatsScreen> {
     );
   }
 
-  // ✅ โหลดรูปจาก assets หรือจากไฟล์ที่ผู้ใช้เพิ่ม
   Widget _loadImage(String imagePath) {
     if (imagePath.startsWith("assets/")) {
       return Image.asset(imagePath, width: 60, height: 60, fit: BoxFit.cover);
